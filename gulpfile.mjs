@@ -13,6 +13,7 @@ import htmlmin from 'gulp-htmlmin';
 import autoprefixer from 'gulp-autoprefixer';
 // import replace from 'gulp-replace';
 import purgecss from 'gulp-purgecss';
+import cache from 'gulp-cache';
 /* eslint-enable no-undef */
 
 const DIR = {
@@ -55,16 +56,14 @@ function components() {
 function copyImages() {
   return (
     src(`${DIR.src}/assets/images/**/*`)
-      .pipe(gulpIf('*.+(png|jpg|gif|svg)', imagemin()))
+      .pipe(gulpIf('*.+(png|jpg|gif|svg)', cache(imagemin())))
       // .pipe(gulpIf('*.+(png|jpg)', webp()))
       .pipe(dest(`${DIR.dist}/assets/images`))
   );
 }
 
-function copyDocs() {
-  return src(`${DIR.src}/assets/docs/**/*`).pipe(
-    dest(`${DIR.dist}/assets/docs`)
-  );
+function copyFonts() {
+  return src(`${DIR.src}/assets/fonts/**/*`).pipe(dest(`${DIR.dist}/assets/fonts`));
 }
 
 function copyMiscFiles() {
@@ -76,5 +75,5 @@ function copyMiscFiles() {
 
 task(
   'build',
-  series(cleanup, copyImages, copyDocs, minify, components, copyMiscFiles)
+  series(cleanup, copyImages, minify, components, copyMiscFiles, copyFonts)
 );
